@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <script src="./circleLine.js"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div class="circleWrap"></div>
+    <script>
+        var test1 = new circleLine('.circleWrap', {
+            value: 90,
+            max: 100,
+            scroll: true,
+            size: 100,
+            normalColor: '#eee',
+            activeColor: '#333',
+            thick: 3,
+            bg: '#fff'
+        })
+        var test2 = new circleLine('.circleWrap', {
+            value: 3,
+            max: 10,
+            scroll: true,
+            size: 130,
+            normalColor: '#eee',
+            activeColor: 'red',
+            thick: 3,
+            bg: '#fefefe'
+        })
+    </script>
+    <div style="height: 10000px;"></div>
+</body>
+</html>
