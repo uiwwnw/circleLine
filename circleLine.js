@@ -35,9 +35,17 @@
                 cur = new Date().getTime();
                 }
             },
-            click: function(){
+            fnAddStyle: function(e, a, v) {
+                e.setAttribute(a, e.getAttribute(a) + ';' + v);
+            },
+            fnRemoveStyle: function(e, a, v) {
+                var _style = e.getAttribute(a);
+                var _s = _style.indexOf(';;');
+                e.setAttribute(a, _style.substr(0, _s + 1));
+            },
+            fnClick: function(){
                 scopeVar.circleLine.el.onclick = function(){
-                    // console.log(this)
+                    eventHandle.fnToggle(this);
                 }
             }
         }
@@ -109,6 +117,7 @@
             + 'clip: rect(0, ' + Math.ceil(scopeVar.opt.size / 2) + 'px, ' + scopeVar.opt.size + 'px, ' + '0);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.circle1.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'circle1', scopeVar.circle1.style);
+            scopeVar.circle1.el.setAttribute('data-score', utilMethod.fnCal().v1);
             scopeVar.circle2 = {};
             scopeVar.circle2.style = 'z-index: 2;'
             + 'position: absolute;'
@@ -122,28 +131,50 @@
             + 'clip: rect(0, ' + scopeVar.opt.size + 'px, ' + scopeVar.opt.size + 'px, ' + Math.ceil(scopeVar.opt.size / 2) + 'px);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.circle2.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'circle2', scopeVar.circle2.style);
+            if(utilMethod.fnCal().v2 !== undefined) {
+                scopeVar.circle2.el.setAttribute('data-score', utilMethod.fnCal().v2);
+            }
         };
     
         // 4. 이벤트 핸들러 작성
         eventHandle = {
-            start: (function(){
-                scopeVar.circle1.el.setAttribute('style', scopeVar.circle1.style 
-                + 'transform: rotate(' + utilMethod.fnCal().v1 + ');');
-                if(utilMethod.fnCal().v2 !== undefined) {
-                    // setTimeout(function(){
-                        scopeVar.circle2.el.setAttribute('style', scopeVar.circle2.style 
-                        + 'transform: rotate(' + utilMethod.fnCal().v2 + ');');
-                        scopeVar.bg1.el.setAttribute('style', scopeVar.bg1.style 
-                        + 'z-index: 1;');
-                        scopeVar.bgC1.el.setAttribute('style', scopeVar.bgC1.style 
-                        + 'z-index: 1;');
-                    // }, scopeVar.opt.animationTime * 1000);
+            fnToggle: (function(e){
+                if(e.getAttribute('data-active') === null) {
+                    e.setAttribute('data-active', true);
+                    var dataScore = e.querySelectorAll('[data-score]');
+                    var length = dataScore.length;
+                    for(var i = 0; i < length; i++) {
+                        utilMethod.fnAddStyle(dataScore[i], 'style', 'transform: rotate(' + dataScore[i].getAttribute('data-score') + ');');
+                        if(i === 1) {
+                            utilMethod.fnAddStyle(e.querySelector('.bg1'), 'style', 'z-index: 1;');
+                            utilMethod.fnAddStyle(e.querySelector('.bgC1'), 'style', 'z-index: 1;');
+                        }
+                    }
+                } else {
+                    e.removeAttribute('data-active');
+                    var dataScore = e.querySelectorAll('[data-score]');
+                    var length = dataScore.length;
+                    for(var i = 0; i < length; i++) {
+                        utilMethod.fnRemoveStyle(dataScore[i], 'style');
+                        if(i === 1) {
+                            utilMethod.fnRemoveStyle(e.querySelector('.bg1'), 'style');
+                            utilMethod.fnRemoveStyle(e.querySelector('.bgC1'), 'style');
+                        }
+                    }
                 }
             }),
-            scroll: (function(){
+            fnScroll: (function(){
                 window.onscroll = (function(){
                     scopeVar.top = scopeVar.wrap.offsetTop;
-                    console.log(scopeVar.top);
+                    var _el = document.querySelectorAll('.circleLine');
+                    var _length = _el.length;
+                    var idx;
+                    for(var i = 0; i < _length; i++) {
+                        if(_el[i].offsetTop < window.scrollY) {
+                            idx = i;
+                            eventHandle.fnToggle(_el[idx]);
+                        }
+                    }
                 });
             })
         };
@@ -154,10 +185,11 @@
             scopeVar.wrap = document.querySelector(e);
             scopeVar.opt = opt === undefined?{}:opt;
             manipulateDom();
-            (scopeVar.opt.scroll == true)&&(eventHandle.scroll());
+            (scopeVar.opt.scroll === true)&&(eventHandle.fnScroll());
+            // utilMethod.fnClick();
+            (scopeVar.opt.scroll === undefined)&&(eventHandle.fnToggle(scopeVar.circleLine.el));
             // setTimeout(function(){
-                eventHandle.start();
-                // utilMethod.click();
+                // eventHandle.fnToggle();
             // }, scopeVar.opt.animationTime);
         };
         return {
