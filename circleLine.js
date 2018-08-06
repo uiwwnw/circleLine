@@ -67,6 +67,7 @@
             + 'left: 0;'
             + 'width: ' + scopeVar.opt.size + 'px;'
             + 'height: ' + scopeVar.opt.size + 'px;'
+            + (scopeVar.opt.animationTime !== undefined?'transition: 0s z-index linear; transition-delay: ' + scopeVar.opt.animationTime + 's;':'')
             + 'clip: rect(0, ' + Math.ceil(scopeVar.opt.size / 2) + 'px, ' + scopeVar.opt.size + 'px, ' + '0);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.bg1.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'bg1', scopeVar.bg1.style);
@@ -89,6 +90,7 @@
             + 'height: ' + Number(scopeVar.opt.size - (scopeVar.opt.thick * 2)) + 'px;'
             + 'border: ' + scopeVar.opt.thick + 'px solid ' + scopeVar.opt.normalColor + ';'
             + 'border-radius: 100%;'
+            + (scopeVar.opt.animationTime !== undefined?'transition: 0s z-index linear; transition-delay: ' + scopeVar.opt.animationTime + 's;':'')
             + 'clip: rect(0, ' + Math.ceil(scopeVar.opt.size / 2) + 'px, ' + scopeVar.opt.size + 'px, ' + '0);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.bgC1.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'bgC1', scopeVar.bgC1.style);
@@ -127,7 +129,7 @@
             + 'height: ' + Number(scopeVar.opt.size - (scopeVar.opt.thick * 2)) + 'px;'
             + 'border: ' + scopeVar.opt.thick + 'px solid ' + scopeVar.opt.activeColor + ';'
             + 'border-radius: 100%;'
-            + (scopeVar.opt.animationTime !== undefined?'transform: rotate(0deg); transition: ' + scopeVar.opt.animationTime + 's transform linear;':'')
+            + (scopeVar.opt.animationTime !== undefined?'transform: rotate(0deg); transition: ' + scopeVar.opt.animationTime + 's transform linear; transition-delay: ' + scopeVar.opt.animationTime + 's;':'')
             + 'clip: rect(0, ' + scopeVar.opt.size + 'px, ' + scopeVar.opt.size + 'px, ' + Math.ceil(scopeVar.opt.size / 2) + 'px);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.circle2.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'circle2', scopeVar.circle2.style);
@@ -138,7 +140,7 @@
     
         // 4. 이벤트 핸들러 작성
         eventHandle = {
-            fnToggle: (function(e){
+            fnAdd: (function(e){
                 if(e.getAttribute('data-active') === null) {
                     e.setAttribute('data-active', true);
                     var dataScore = e.querySelectorAll('[data-score]');
@@ -150,7 +152,10 @@
                             utilMethod.fnAddStyle(e.querySelector('.bgC1'), 'style', 'z-index: 1;');
                         }
                     }
-                } else {
+                }
+            }),
+            fnRemove: (function(e){
+                if(e.getAttribute('data-active') === 'true') {
                     e.removeAttribute('data-active');
                     var dataScore = e.querySelectorAll('[data-score]');
                     var length = dataScore.length;
@@ -163,18 +168,26 @@
                     }
                 }
             }),
+            fnToggle: (function(e){
+                if(e.getAttribute('data-active') === null) {
+                    eventHandle.fnAdd(e);
+                } else {
+                    eventHandle.fnRemove(e);
+                }
+            }),
             fnScroll: (function(){
                 window.onscroll = (function(){
                     scopeVar.top = scopeVar.wrap.offsetTop;
+                    scopeVar.height = window.innerHeight;
                     var _el = document.querySelectorAll('.circleLine');
                     var _length = _el.length;
                     var idx;
                     for(var i = 0; i < _length; i++) {
-                        if(_el[i].offsetTop < window.scrollY) {
+                        if(_el[i].offsetTop < window.scrollY + scopeVar.height / 2) {
                             idx = i;
-                            eventHandle.fnToggle(_el[idx]);
                         }
                     }
+                    (_el[idx] !== undefined) && (eventHandle.fnAdd(_el[idx]));
                 });
             })
         };
@@ -186,11 +199,8 @@
             scopeVar.opt = opt === undefined?{}:opt;
             manipulateDom();
             (scopeVar.opt.scroll === true)&&(eventHandle.fnScroll());
-            // utilMethod.fnClick();
-            (scopeVar.opt.scroll === undefined)&&(eventHandle.fnToggle(scopeVar.circleLine.el));
-            // setTimeout(function(){
-                // eventHandle.fnToggle();
-            // }, scopeVar.opt.animationTime);
+            utilMethod.fnClick();
+            (scopeVar.opt.scroll === undefined)&&(eventHandle.fnAdd(scopeVar.circleLine.el));
         };
         return {
             init : initModule
