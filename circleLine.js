@@ -60,6 +60,19 @@
             + 'height: ' + scopeVar.opt.size + 'px;'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.circleLine.el = utilMethod.fnCreateNclass(scopeVar.wrap, 'i', 'circleLine', scopeVar.circleLine.style);
+            scopeVar.txt = {};
+            scopeVar.txt.style = 'z-index: 10;'
+            + 'position: absolute;'
+            + 'top: 0;'
+            + 'left: 0;'
+            + 'width: ' + scopeVar.opt.size + 'px;'
+            + 'height: ' + scopeVar.opt.size + 'px;'
+            + 'font-style: normal;'
+            + 'text-align: center;'
+            + 'font-size: ' + Math.ceil(scopeVar.opt.size / 3) + 'px;'
+            + 'line-height: ' + scopeVar.opt.size + 'px;';
+            scopeVar.txt.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'txt', scopeVar.txt.style);
+            scopeVar.txt.el.setAttribute('data-txt', scopeVar.opt.value);
             scopeVar.bg1 = {};
             scopeVar.bg1.style = 'z-index: 5;'
             + 'position: absolute;'
@@ -145,6 +158,14 @@
                     e.setAttribute('data-active', true);
                     var dataScore = e.querySelectorAll('[data-score]');
                     var length = dataScore.length;
+                    var txt = e.querySelector('[data-txt]');
+                    var score = Number(txt.getAttribute('data-txt'));
+                    // var i = 0;
+                    // while(i < score) {
+                        // i++;
+                        // txt.innerText = i;
+                    // }
+                    txt.innerText = score;
                     for(var i = 0; i < length; i++) {
                         utilMethod.fnAddStyle(dataScore[i], 'style', 'transform: rotate(' + dataScore[i].getAttribute('data-score') + ');');
                         if(i === 1) {
@@ -199,7 +220,7 @@
             scopeVar.opt = opt === undefined?{}:opt;
             manipulateDom();
             (scopeVar.opt.scroll === true)&&(eventHandle.fnScroll());
-            utilMethod.fnClick();
+            // utilMethod.fnClick();
             (scopeVar.opt.scroll === undefined)&&(eventHandle.fnAdd(scopeVar.circleLine.el));
         };
         return {
