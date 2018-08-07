@@ -21,9 +21,11 @@
                 var _values = {};
                 _values.v1 = _value;
                 _values.v2;
+                _values.v3;
                 if (_value > 180) {
                     _values.v1 = 180;
-                    _values.v2 = _value - 180 + 'deg';
+                    _values.v3 = _value - 180;
+                    _values.v2 = _values.v3 + 'deg';
                 }
                 _values.v1 += 'deg';
                 return _values;
@@ -128,7 +130,7 @@
             + 'height: ' + Number(scopeVar.opt.size - (scopeVar.opt.thick * 2)) + 'px;'
             + 'border: ' + scopeVar.opt.thick + 'px solid ' + scopeVar.opt.activeColor + ';'
             + 'border-radius: 100%;'
-            + (scopeVar.opt.animationTime !== undefined?'transform: rotate(0deg); transition: ' + scopeVar.opt.animationTime + 's transform linear;':'')
+            + (scopeVar.opt.animationTime !== undefined?'transform: rotate(0); transition: ' + scopeVar.opt.animationTime + 's transform linear;':'')
             + 'clip: rect(0, ' + Math.ceil(scopeVar.opt.size / 2) + 'px, ' + scopeVar.opt.size + 'px, ' + '0);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.circle1.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'circle1', scopeVar.circle1.style);
@@ -142,7 +144,7 @@
             + 'height: ' + Number(scopeVar.opt.size - (scopeVar.opt.thick * 2)) + 'px;'
             + 'border: ' + scopeVar.opt.thick + 'px solid ' + scopeVar.opt.activeColor + ';'
             + 'border-radius: 100%;'
-            + (scopeVar.opt.animationTime !== undefined?'transform: rotate(0deg); transition: ' + scopeVar.opt.animationTime + 's transform linear; transition-delay: ' + scopeVar.opt.animationTime + 's;':'')
+            + (scopeVar.opt.animationTime !== undefined?'transform: rotate(0); transition: ' + (scopeVar.opt.animationTime * utilMethod.fnCal().v3 / 180) + 's transform linear; transition-delay: ' + scopeVar.opt.animationTime + 's;':'')
             + 'clip: rect(0, ' + scopeVar.opt.size + 'px, ' + scopeVar.opt.size + 'px, ' + Math.ceil(scopeVar.opt.size / 2) + 'px);'
             + 'background: ' + scopeVar.opt.bg + ';';
             scopeVar.circle2.el = utilMethod.fnCreateNclass(scopeVar.circleLine.el, 'i', 'circle2', scopeVar.circle2.style);

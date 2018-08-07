@@ -10,12 +10,13 @@
 <body>
     <div style="height: 400px;"></div>
     <div class="circleWrap"></div>
+    <div style="height: 300px;"></div>
+    <div class="circleWrap2"></div>
+    <div style="height: 1000px;"></div>
     <script>
         var test1 = new circleLine('.circleWrap', {
             value: 85,
             max: 100,
-            scroll: true,
-            animationTime: 1,
             size: 100,
             normalColor: '#eee',
             activeColor: '#333',
@@ -33,9 +34,19 @@
             thick: 13,
             bg: '#fefefe'
         });
+        var test3 = new circleLine('.circleWrap2', {
+            value: 5.3,
+            max: 10,
+            scroll: true,
+            animationTime: 1,
+            size: 130,
+            normalColor: '#eee',
+            activeColor: 'red',
+            thick: 13,
+            bg: '#fefefe'
+        });
         // console.log(test1);
         // console.log(test2);
     </script>
-    <div style="height: 10000px;"></div>
 </body>
 </html>
